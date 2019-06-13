@@ -2,6 +2,7 @@ package x509lib
 
 import (
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
@@ -98,4 +99,19 @@ func IsTimeStampingCert(cert *x509.Certificate) bool {
 		}
 	}
 	return false
+}
+
+// DumpX509InJSON dumps x509 information in
+// JSON when path of x509 is given a parameter
+// returns error when error occurs.
+func DumpX509InJSON(x509Path string, jsonPath string) error {
+	cert, err := LoadPEMCertWithPath(x509Path)
+	if err != nil {
+		return err
+	}
+	jsonBytes, err := json.Marshal(cert)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(jsonPath, jsonBytes, 0644)
 }
